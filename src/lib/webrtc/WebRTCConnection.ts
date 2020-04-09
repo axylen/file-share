@@ -76,6 +76,10 @@ class WebRTCConnection {
     if (message.readyState === 'open') return message.send(msg);
     setTimeout(() => this.sendMessage(msg), 50);
   };
+
+  sendJSON = (obj: object): void => {
+    this.sendMessage(JSON.stringify(obj));
+  };
 }
 
 export default WebRTCConnection;
