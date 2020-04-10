@@ -9,7 +9,7 @@ class WebRTCWithFileChannel extends WebRTCConnection {
   onFile = (file: Blob, info: FileInfo) => {};
   onRequestFile = (id: string): File | void => {};
 
-  constructor(config: RTCConfiguration | undefined) {
+  constructor(config?: RTCConfiguration) {
     super(config);
 
     const fileChannel = new WebRTCFileChannel(this.connection, 'file');
