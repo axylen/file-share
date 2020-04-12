@@ -1,12 +1,14 @@
 :root {
   --color-primary: #03a9f4;
-  --color-secondary: #e6f7ff;
+  --color-secondary: #edf9ff;
+  --color-tertiary: #0288d1;
   --color-danger: #f44336;
 
   --color-text: #2b3133;
   --color-text-inverse: #fff;
 
   --color-background: #fff;
+  --color-header: #03a9f4;
 }
 
 body {

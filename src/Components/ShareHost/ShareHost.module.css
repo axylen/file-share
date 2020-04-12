@@ -1,0 +1,19 @@
+.heading {
+  font-size: 32px;
+
+  text-align: center;
+}
+
+.urlBox {
+  display: flex;
+  justify-content: center;
+
+  transform: translateY(-50%);
+}
+
+.container {
+  --color-hover: var(--color-danger);
+
+  max-width: 860px;
+  margin: 0 auto;
+}

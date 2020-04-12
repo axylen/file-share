@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Switch, HashRouter } from 'react-router-dom';
 
 import Home from 'Pages/Home';
+import Share from 'Pages/Share';
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
       <HashRouter>
         <Switch>
           <Route path="/:id">
-            Share Page
+            <Share />
           </Route>
           <Route path="/">
             <Home />

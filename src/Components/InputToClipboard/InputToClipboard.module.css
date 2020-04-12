@@ -1,0 +1,60 @@
+.inputGroup {
+  position: relative;
+
+  display: block;
+
+  width: 100%;
+  max-width: 520px;
+
+  transition: transform .15s ease-in-out;
+
+  color: var(--color-text);
+}
+
+.input {
+  font-weight: 600;
+
+  width: 100%;
+  padding: 14px 100px 14px 20px;
+
+  text-overflow: ellipsis;
+
+  border: 2px solid var(--color-tertiary);
+  border-radius: 5px;
+  outline: none;
+  background-color: var(--color-background);
+  box-shadow: 0 -3px 6px rgba(0, 0, 0, .16);
+}
+
+.btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 94px;
+  height: 100%;
+
+  cursor: pointer;
+  transition: color .1s, background-color .1s;
+
+  border: 2px solid var(--color-tertiary);
+  border-radius: 0 5px 5px 0;
+  outline: none;
+  background: none;
+}
+
+.btn:focus,
+.btn:hover {
+  color: var(--color-text-inverse);
+  background-color: var(--color-primary);
+}
+
+.icon {
+  margin-right: 4px;
+
+  fill: currentColor;
+}

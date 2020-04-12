@@ -4,16 +4,13 @@ import css from './FileInput.module.css';
 import { classnames } from 'lib/helpers';
 
 interface IFileInputProps {
-  onFileInput: FileInputFunction;
-}
-
-interface FileInputFunction {
-  (files: File[]): void;
+  onFileInput: (files: File[]) => void;
+  noFocus?: boolean;
 }
 
 type InputFileChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
-const FileInput: React.FC<IFileInputProps> = ({ onFileInput }) => {
+const FileInput: React.FC<IFileInputProps> = ({ onFileInput, noFocus }) => {
   const [isInDragMode, setIsInDragMode] = useState(false);
   const dropzoneRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +59,14 @@ const FileInput: React.FC<IFileInputProps> = ({ onFileInput }) => {
       className={classnames(dropzoneClasses)}
       onDragOver={(evt) => evt.preventDefault()}
       onDrop={handleDrop}>
-      <input type="file" name="files" className="visually-hidden" multiple onChange={handleInput} />
+      <input
+        type="file"
+        name="files"
+        className="visually-hidden"
+        multiple
+        onChange={handleInput}
+        tabIndex={noFocus ? -1 : 0}
+      />
     </div>
   );
 };

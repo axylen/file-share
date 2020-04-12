@@ -1,4 +1,3 @@
-import { WebRTCWithFileChannel } from 'lib/webrtc';
 import { generateFileId } from 'lib/helpers';
 
 import {

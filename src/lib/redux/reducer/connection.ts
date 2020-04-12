@@ -1,5 +1,3 @@
-import { WebRTCWithFileChannel } from 'lib/webrtc';
-
 import { SET_CONNECTION } from '../action';
 
 interface IConnectionInfo {

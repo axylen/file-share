@@ -1,5 +1,13 @@
 import WebRTCConnection from './WebRTCConnection';
-import WebRTCWithFileChannel from './WebRTCWithFileChannel';
+import WebRTCConnectionWithFileChannel from './WebRTCWithFileChannel';
 import WebRTCFileChannel from './WebRTCFileChannel';
 
-export { WebRTCConnection, WebRTCWithFileChannel, WebRTCFileChannel };
+declare global {
+  type WebRTCWithFileChannel = WebRTCConnectionWithFileChannel;
+}
+
+export {
+  WebRTCConnection,
+  WebRTCConnectionWithFileChannel as WebRTCWithFileChannel,
+  WebRTCFileChannel,
+};
