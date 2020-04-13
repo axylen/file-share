@@ -19,7 +19,7 @@ class WebRTCFileChannel {
   private file: FileData | undefined;
 
   onFileReady = (file: Blob, info: FileInfo): void => {};
-  onFileProgress = (size: { size: number; downloaded: number }): void => {};
+  onFileProgress = (info: { size: number; downloaded: number; id: string }): void => {};
 
   constructor(connection: RTCPeerConnection, label: string) {
     this.channel = connection.createDataChannel(label);
@@ -40,6 +40,7 @@ class WebRTCFileChannel {
         this.onFileProgress({
           size: file.size,
           downloaded: file.downloadedSize,
+          id: file.id,
         });
       }
 
@@ -68,10 +69,13 @@ class WebRTCFileChannel {
     }
   };
 
-  private sendingFileQueue: File[] = [];
-  sendFile = (file: File) => {
+  private sendingFileQueue: {
+    file: File;
+    id: string;
+  }[] = [];
+  sendFile = (file: File, id: string) => {
     const queue = this.sendingFileQueue;
-    queue.push(file);
+    queue.push({ file, id });
 
     if (queue.length > 1) return;
 
@@ -82,7 +86,7 @@ class WebRTCFileChannel {
     const queue = this.sendingFileQueue;
     if (!queue.length) return;
 
-    const file = this.sendingFileQueue[0];
+    const { file, id } = queue[0];
     const chunkSize = 16 * 1024;
 
     let offset = 0;
@@ -96,7 +100,7 @@ class WebRTCFileChannel {
         const info: IFileTransferInfo = {
           status: 'new',
           info: {
-            id: 'randomid',
+            id,
             name: file.name,
             size: file.size,
           },

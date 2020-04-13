@@ -7,6 +7,7 @@ class WebRTCWithFileChannel extends WebRTCConnection {
   fileChannel: WebRTCFileChannel;
 
   onFile = (file: Blob, info: FileInfo) => {};
+  onFileProgress = (info: { size: number; downloaded: number; id: string }): void => {};
   onRequestFile = (id: string): File | void => {};
 
   constructor(config?: RTCConfiguration) {
@@ -16,6 +17,7 @@ class WebRTCWithFileChannel extends WebRTCConnection {
     this.fileChannel = fileChannel;
 
     fileChannel.onFileReady = (file, info) => this.onFile(file, info);
+    fileChannel.onFileProgress = (info) => this.onFileProgress(info);
 
     this.messageChannel.onmessage = this._onMessage;
   }
@@ -25,14 +27,14 @@ class WebRTCWithFileChannel extends WebRTCConnection {
 
     if (asObj && asObj.action === 'sendFile') {
       const file = this.onRequestFile(asObj.id);
-      if (file) this.sendFile(file);
+      if (file) this.sendFile(file, asObj.id);
       return;
     }
 
     this.onMessage(evt.data);
   };
 
-  sendFile = (file: File) => this.fileChannel.sendFile(file);
+  sendFile = (file: File, id: string) => this.fileChannel.sendFile(file, id);
 
   requestFile = (id: string) => {
     this.sendJSON({ action: 'sendFile', id });
