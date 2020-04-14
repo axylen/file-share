@@ -11,27 +11,25 @@ interface IShareClientProps {
   connectionStatus: RTCIceConnectionState;
 }
 
-const SpinnerComp = (
-  <div>
-    connecting
-    <div className={css.spinner}>
-      <Spinner />
-    </div>
-  </div>
-);
-
 const ShareClient: React.FC<IShareClientProps> = ({ files, requestFile, connectionStatus }) => {
-  const leadText = connectionStatus === 'connected' ? 'click on file to start download' : SpinnerComp;
+  const leadText = connectionStatus === 'connected' ? 'click on file to start download' : 'connecting';
 
   return (
     <>
-      <Header main="Download Files" lead={leadText} />
-      <div>
-        <main className={css.container}>
-          <h2 className={css.heading}>Files</h2>
-          <FileList files={files} onFileClick={requestFile} />
-        </main>
+      <Header main="Download files" lead={leadText} />
+      <div className={css.connectionBox}>
+        {connectionStatus !== 'connected' ? (
+          <div className={css.spinner}>
+            <Spinner />
+          </div>
+        ) : (
+          <div className={css.connectionStatus}>You are connected</div>
+        )}
       </div>
+      <main className={css.container}>
+        <h2 className={css.heading}>Files</h2>
+        {Object.keys(files).length ? <FileList files={files} onFileClick={requestFile} iconOnHover="file-download" /> : <h3 className={css.noFiles}>There's no files yet :(</h3>}
+      </main>
     </>
   );
 };

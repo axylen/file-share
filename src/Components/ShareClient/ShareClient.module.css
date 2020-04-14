@@ -1,7 +1,19 @@
 .heading {
   font-size: 32px;
+  font-weight: 600;
+
+  margin: 40px 0 20px;
 
   text-align: center;
+}
+
+.connectionBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 41px;
+  padding: 0 20px;
 }
 
 .container {
@@ -11,12 +23,25 @@
 }
 
 .spinner {
-  position: absolute;
+  width: 32px;
+  height: 32px;
+}
 
-  display: inline-block;
+.connectionStatus {
+  width: 260px;
+  padding: 10px;
 
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
-  margin-left: 6px;
+  text-align: center;
+  text-transform: capitalize;
+
+  color: var(--color-text-inverse);
+  border-radius: 5px;
+  background-color: var(--color-secondary);
+}
+
+.noFiles {
+  font-size: 24px;
+  text-align: center;
+  font-weight: 600;
+  margin: 0;
 }

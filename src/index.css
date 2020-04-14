@@ -1,25 +1,39 @@
 :root {
-  --color-primary: #03a9f4;
-  --color-secondary: #edf9ff;
-  --color-tertiary: #0288d1;
+  --color-primary: #2196f3;
+  --color-primary-60: hsla(207, 90%, 54%, 0.6);
+
+  --color-secondary: #fff;
+  --color-tertiary: #d9d9d9;
   --color-danger: #f44336;
+  --color-progress: #4caf50;
 
-  --color-text: #2b3133;
-  --color-text-inverse: #fff;
+  --color-text: #ffffff;
+  --color-text-inverse: #284459;
+}
 
-  --color-background: #fff;
-  --color-header: #03a9f4;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #001a26;
+    --color-primary-60: hsla(200, 100%, 7%, 0.6);
+
+    --color-secondary: #203640;
+    --color-tertiary: #425b66;
+    --color-danger: #001a26;
+    --color-progress: #48a64c;
+
+    --color-text: #adc2cc;
+    --color-text-inverse: #adc2cc;
+  }
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 
   margin: 0;
   padding: 0;
 
   color: var(--color-text);
-  background-color: var(--color-background);
+  background-color: var(--color-primary);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

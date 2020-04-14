@@ -1,21 +1,22 @@
 .header {
-  padding: 35px 20px 45px;
+  padding: 35px 20px 25px;
 
   text-align: center;
-
-  color: var(--color-text-inverse);
-  background-color: var(--color-header);
 }
 
 .header__heading {
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 700;
 
   margin: 0;
+
+  text-transform: capitalize;
 }
 
 .header__lead {
-  font-size: 14px;
+  font-size: 16px;
 
   margin: 0;
+
+  text-transform: lowercase;
 }

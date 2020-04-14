@@ -10,14 +10,15 @@ interface IFileListProps {
   }[];
   onFileClick?: (id: string) => void;
   appendComponent?: React.ReactNode;
+  iconOnHover: string;
 }
 
-const FileList: React.FC<IFileListProps> = ({ files, onFileClick, appendComponent }) => {
+const FileList: React.FC<IFileListProps> = ({ files, onFileClick, appendComponent, iconOnHover }) => {
   return (
     <ul className={css.list}>
       {files.map(({ id, name, progress }) => (
         <li key={id}>
-          <FileCard name={name} id={id} onClick={onFileClick} progress={progress} />
+          <FileCard name={name} id={id} onClick={onFileClick} progress={progress} iconOnHover={iconOnHover} />
         </li>
       ))}
       {appendComponent ? <li>{appendComponent}</li> : null}

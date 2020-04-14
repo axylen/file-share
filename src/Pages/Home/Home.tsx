@@ -41,7 +41,8 @@ const Home: React.FC<IHomeProps> = ({ addConnection, addFiles, clearFiles }) => 
   return (
     <>
       <label className={css.container}>
-        <h1>Add Files</h1>
+        <h1 className={css.heading}>Share files easily</h1>
+        <p className={css.lead}>Drop files here or click to select</p>
         <FileInput onFileInput={handleFileInput} />
       </label>
       <Backdrop active={loading}>

@@ -20,19 +20,11 @@ const InputToClipboard: React.FC<IInputToClipboardProps> = ({ text }) => {
 
   return (
     <div className={css.inputGroup}>
-      <input
-        ref={urlInput}
-        className={css.input}
-        readOnly
-        value={text}
-        onFocus={handleInputFocus}
-        autoFocus
-      />
+      <input ref={urlInput} className={css.input} readOnly value={text} onFocus={handleInputFocus} autoFocus />
       <button className={css.btn} onClick={handleClick}>
-        <svg className={css.icon} xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+        <svg className={css.icon} xmlns="http://www.w3.org/2000/svg">
           <use href="icons.svg#copy" />
         </svg>
-        Copy
       </button>
     </div>
   );

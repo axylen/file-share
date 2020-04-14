@@ -2,33 +2,20 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
 
   height: 200px;
 
   cursor: pointer;
 
-  border: 2px solid transparent;
+  color: var(--color-text-inverse);
   border-radius: 5px;
   background-color: var(--color-secondary);
 }
 
-.addFiles:focus-within,
-.addFiles:hover {
-  border-color: var(--color-primary);
-}
-
-.addFiles__caption {
-  font-size: 24px;
-
-  margin-top: 9px;
-  margin-bottom: 20px;
-}
-
 .icon {
   width: 100px;
-  margin-top: 9px;
-  opacity: 0.75;
+  height: 100px;
+  margin: 25px auto 20px;
 
-  fill: var(--color-text);
+  fill: var(--color-primary);
 }
