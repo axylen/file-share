@@ -11,12 +11,16 @@ interface IShareHostProps {
   files: { id: string; name: string }[];
   addFiles: (files: File[]) => void;
   removeFile: (id: string) => void;
+  connectionStatus: RTCIceConnectionState;
 }
 
-const ShareHost: React.FC<IShareHostProps> = ({ files, addFiles, removeFile }) => {
+const ShareHost: React.FC<IShareHostProps> = ({ files, addFiles, removeFile, connectionStatus }) => {
+  const mainText = connectionStatus === 'connected' ? 'Client Connected' : 'Share This Link';
+  const leadText = connectionStatus === 'connected' ? "don't close the tab until files are downloaded" : 'waiting for connection';
+  
   return (
     <>
-      <Header main="Share This Link" lead="waiting for connection..." />
+      <Header main={mainText} lead={leadText} />
       <div>
         <div className={css.urlBox}>
           <InputToClipboard text={window.location.href} />

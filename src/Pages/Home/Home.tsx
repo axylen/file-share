@@ -6,19 +6,21 @@ import css from './Home.module.css';
 import FileInput from 'Components/FileInput';
 import { WebRTCWithFileChannel } from 'lib/webrtc';
 import { FirestoreConnection } from 'lib/firebase';
-import { hostAddFiles, hostSetConnection } from 'lib/redux';
+import { hostAddFiles, hostSetConnection, hostClearFiles } from 'lib/redux';
 
 interface IHomeProps {
-  addConnection: any;
-  addFiles: any;
+  addConnection: typeof hostSetConnection;
+  addFiles: typeof hostAddFiles;
+  clearFiles: typeof hostClearFiles;
 }
 
-const Home: React.FC<IHomeProps> = ({ addConnection, addFiles }) => {
+const Home: React.FC<IHomeProps> = ({ addConnection, addFiles, clearFiles }) => {
   const history = useHistory();
 
   const handleFileInput = async (files: File[]) => {
     const connection = new WebRTCWithFileChannel();
     addConnection(connection);
+    clearFiles();
     addFiles(files);
 
     const firestoreCon = new FirestoreConnection();
@@ -42,4 +44,5 @@ const Home: React.FC<IHomeProps> = ({ addConnection, addFiles }) => {
 export default connect(null, {
   addConnection: hostSetConnection,
   addFiles: hostAddFiles,
+  clearFiles: hostClearFiles,
 })(Home);

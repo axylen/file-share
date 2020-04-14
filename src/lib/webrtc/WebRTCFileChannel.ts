@@ -87,7 +87,7 @@ class WebRTCFileChannel {
     if (!queue.length) return;
 
     const { file, id } = queue[0];
-    const chunkSize = 16 * 1024;
+    const chunkSize = 4 * 1024;
 
     let offset = 0;
     let isStarted = false;

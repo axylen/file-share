@@ -22,8 +22,21 @@
 }
 
 .card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   height: 120px;
   margin: 5px;
+}
+
+.icon {
+  width: 100px;
+  margin-top: 14px;
+
+  opacity: 0.75;
+
+  fill: var(--color-text);
 }
 
 .card__title {

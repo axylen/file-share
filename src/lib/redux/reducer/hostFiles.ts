@@ -1,4 +1,4 @@
-import { HOST_ADD_FILES, HOST_REMOVE_FILE } from '../action';
+import { HOST_ADD_FILES, HOST_REMOVE_FILE, HOST_CLEAR_FILES } from '../action';
 
 declare global {
   interface IHostFileStorage {
@@ -12,8 +12,11 @@ declare global {
     type: typeof HOST_REMOVE_FILE;
     payload: { id: string };
   }
+  interface IHostClearFilesAction {
+    type: typeof HOST_CLEAR_FILES;
+  }
 }
-type Action = IHostAddFilesAction | IHostRemoveFileAction;
+type Action = IHostAddFilesAction | IHostRemoveFileAction | IHostClearFilesAction;
 
 const initState: IHostFileStorage = {};
 
@@ -24,6 +27,8 @@ export default (state: IHostFileStorage = initState, action: Action): IHostFileS
     case HOST_REMOVE_FILE:
       const { [action.payload.id]: deleted, ...files } = state;
       return files;
+    case HOST_CLEAR_FILES:
+      return {};
   }
   return state;
 };

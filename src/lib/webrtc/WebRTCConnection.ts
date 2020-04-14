@@ -1,22 +1,18 @@
 const RTCPeerConnectionConfig: RTCConfiguration = {
   iceServers: [
-    {
-      urls: [
-        'stun:stun.l.google.com:19302',
-        'stun:stun1.l.google.com:19302',
-        'stun:stun2.l.google.com:19302',
-        'stun:stun3.l.google.com:19302',
-        'stun:stun4.l.google.com:19302',
-        'stun:stunserver.org',
-      ],
-    },
+    { urls: ['stun:stun.l.google.com:19302'] },
+    { urls: ['stun:stun1.l.google.com:19302'] },
+    { urls: ['stun:stun2.l.google.com:19302'] },
+    { urls: ['stun:stun3.l.google.com:19302'] },
+    { urls: ['stun:stun4.l.google.com:19302'] },
+    { urls: ['stun:stun.voipstunt.com'] },
   ],
 };
 
 class WebRTCConnection {
   connection: RTCPeerConnection;
   messageChannel: RTCDataChannel;
-  onConnection = () => {};
+  onConnection = (status: RTCIceConnectionState) => {};
   onMessage = (msg: string) => {};
 
   constructor(config: RTCConfiguration = RTCPeerConnectionConfig) {
@@ -33,8 +29,7 @@ class WebRTCConnection {
       if (channel.label === 'message') this.messageChannel = channel;
     });
     connection.addEventListener('iceconnectionstatechange', () => {
-      if (connection.iceConnectionState !== 'connected') return;
-      this.onConnection();
+      this.onConnection(connection.iceConnectionState);
     });
   }
 
@@ -50,9 +45,7 @@ class WebRTCConnection {
 
       await connection.setLocalDescription(await connection.createOffer());
 
-      setTimeout(() => {
-        connection.iceGatheringState !== 'complete' && resolve(this.description);
-      }, 2000);
+      connection.iceGatheringState !== 'complete' && resolve(this.description);
     });
   };
 
