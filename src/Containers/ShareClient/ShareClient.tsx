@@ -1,28 +1,23 @@
 import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
-import { clientAddFiles, clientRemoveFile, setDownloadProgress, saveFileData } from 'lib/redux';
+import { clientAddFiles, clientRemoveFile, setDownloadProgress, saveFileData, setConnectionStatus } from 'lib/redux';
 import { tryParseJSON, saveFile } from 'lib/helpers';
 
 import Share from 'Components/ShareClient';
 
 interface ISShareClientProps {
   connection: WebRTCWithFileChannel;
+  connectionStatus: RTCIceConnectionState;
   files: IClientFileStorage;
   addFiles: typeof clientAddFiles;
   removeFile: typeof clientRemoveFile;
   setDownloadProgress: typeof setDownloadProgress;
   saveFileData: typeof saveFileData;
+  setConnectionStatus: typeof setConnectionStatus;
 }
 
-const ShareClient: React.FC<ISShareClientProps> = ({
-  connection,
-  files,
-  addFiles,
-  removeFile,
-  setDownloadProgress,
-  saveFileData,
-}) => {
+const ShareClient: React.FC<ISShareClientProps> = ({ connection, connectionStatus, files, addFiles, removeFile, setDownloadProgress, saveFileData, setConnectionStatus }) => {
   useEffect(() => {
     connection.onMessage = (msg) => {
       const obj = tryParseJSON(msg);
@@ -37,7 +32,8 @@ const ShareClient: React.FC<ISShareClientProps> = ({
     connection.onFileProgress = ({ downloaded, id }) => {
       setDownloadProgress(id, downloaded);
     };
-  }, [connection, addFiles, removeFile, setDownloadProgress]);
+    connection.onConnection = setConnectionStatus;
+  }, [connection, addFiles, removeFile, setDownloadProgress, setConnectionStatus]);
 
   useEffect(() => {
     connection.onFile = (file, info) => {
@@ -65,14 +61,15 @@ const ShareClient: React.FC<ISShareClientProps> = ({
     return fileInfo;
   });
 
-  return <Share files={filesList} requestFile={handleRequestFile} />;
+  return <Share files={filesList} requestFile={handleRequestFile} connectionStatus={connectionStatus} />;
 };
 
-const mapStateToProps = (state: ReduxStore) => ({ files: state.clientFiles });
+const mapStateToProps = (state: ReduxStore) => ({ files: state.clientFiles, connectionStatus: state.connection.status });
 
 export default connect(mapStateToProps, {
   addFiles: clientAddFiles,
   removeFile: clientRemoveFile,
   setDownloadProgress,
   saveFileData,
+  setConnectionStatus,
 })(ShareClient);

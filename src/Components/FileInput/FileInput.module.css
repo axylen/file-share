@@ -1,23 +1,13 @@
 .input {
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
   display: flex;
 
+  height: 100%;
   padding: 30px;
-}
-
-.inputActive {
-  z-index: 10;
 
   background-color: var(--color-secondary);
 }
 
-.inputActive::before {
+.input::before {
   font-size: 24px;
   font-weight: 900;
 

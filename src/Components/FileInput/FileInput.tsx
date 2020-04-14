@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import css from './FileInput.module.css';
 
-import { classnames } from 'lib/helpers';
+import Backdrop from 'Components/Backdrop';
 
 interface IFileInputProps {
   onFileInput: (files: File[]) => void;
@@ -48,26 +48,12 @@ const FileInput: React.FC<IFileInputProps> = ({ onFileInput, noFocus }) => {
     };
   }, []);
 
-  const dropzoneClasses = {
-    [css.input]: true,
-    [css.inputActive]: isInDragMode,
-  };
-
   return (
-    <div
-      ref={dropzoneRef}
-      className={classnames(dropzoneClasses)}
-      onDragOver={(evt) => evt.preventDefault()}
-      onDrop={handleDrop}>
-      <input
-        type="file"
-        name="files"
-        className="visually-hidden"
-        multiple
-        onChange={handleInput}
-        tabIndex={noFocus ? -1 : 0}
-      />
-    </div>
+    <Backdrop active={isInDragMode}>
+      <div ref={dropzoneRef} className={css.input} onDragOver={(evt) => evt.preventDefault()} onDrop={handleDrop}>
+        <input type="file" name="files" className="visually-hidden" multiple onChange={handleInput} tabIndex={noFocus ? -1 : 0} />
+      </div>
+    </Backdrop>
   );
 };
 

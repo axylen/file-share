@@ -9,3 +9,14 @@
   margin: 0 auto;
   padding: 0 20px;
 }
+
+.spinner {
+  position: absolute;
+
+  display: inline-block;
+
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  margin-left: 6px;
+}
