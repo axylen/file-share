@@ -14,23 +14,36 @@ const FileInput: React.FC<IFileInputProps> = ({ onFileInput, noFocus }) => {
   const [isInDragMode, setIsInDragMode] = useState(false);
   const dropzoneRef = useRef<HTMLDivElement>(null);
 
+  const checkFiles = useCallback(
+    (files: File[]) => {
+      const filtered = files.filter((file) => {
+        if (file.size === 0) return false;
+        if (file.name.match(/lnk$/)) return false;
+        if (file.type === '' && file.size === 4096) return false;
+        return true;
+      });
+      if (filtered.length) onFileInput(filtered);
+    },
+    [onFileInput],
+  );
+
   const handleDrop = useCallback(
     (evt: React.DragEvent) => {
       evt.preventDefault();
       setIsInDragMode(false);
 
       const files = evt.dataTransfer.files;
-      if (files) onFileInput(Array.from(files));
+      if (files) checkFiles(Array.from(files));
     },
-    [onFileInput],
+    [checkFiles],
   );
 
   const handleInput = useCallback(
     (evt: InputFileChangeEvent) => {
       const files = evt.target.files;
-      if (files) onFileInput(Array.from(files));
+      if (files) checkFiles(Array.from(files));
     },
-    [onFileInput],
+    [checkFiles],
   );
 
   useEffect(() => {
