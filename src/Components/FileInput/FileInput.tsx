@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import css from './FileInput.module.css';
 
 import Backdrop from 'Components/Backdrop';
+import { filterFiles } from 'lib/helpers';
 
 interface IFileInputProps {
   onFileInput: (files: File[]) => void;
@@ -16,12 +17,7 @@ const FileInput: React.FC<IFileInputProps> = ({ onFileInput, noFocus }) => {
 
   const checkFiles = useCallback(
     (files: File[]) => {
-      const filtered = files.filter((file) => {
-        if (file.size === 0) return false;
-        if (file.name.match(/lnk$/)) return false;
-        if (file.type === '' && file.size === 4096) return false;
-        return true;
-      });
+      const filtered = filterFiles(files);
       if (filtered.length) onFileInput(filtered);
     },
     [onFileInput],

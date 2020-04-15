@@ -13,17 +13,15 @@ interface IFileListProps {
   iconOnHover: string;
 }
 
-const FileList: React.FC<IFileListProps> = ({ files, onFileClick, appendComponent, iconOnHover }) => {
-  return (
-    <ul className={css.list}>
-      {files.map(({ id, name, progress }) => (
-        <li key={id}>
-          <FileCard name={name} id={id} onClick={onFileClick} progress={progress} iconOnHover={iconOnHover} />
-        </li>
-      ))}
-      {appendComponent ? <li>{appendComponent}</li> : null}
-    </ul>
-  );
-};
+const FileList: React.FC<IFileListProps> = ({ files, onFileClick, appendComponent, iconOnHover }) => (
+  <ul className={css.list}>
+    {files.map((file) => (
+      <li key={file.id}>
+        <FileCard {...file} onClick={onFileClick} iconOnHover={iconOnHover} />
+      </li>
+    ))}
+    {appendComponent ? <li>{appendComponent}</li> : null}
+  </ul>
+);
 
 export default FileList;

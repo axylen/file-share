@@ -29,11 +29,12 @@ const ShareClient: React.FC<ISShareClientProps> = ({ connection, connectionStatu
           return removeFile(obj.id);
       }
     };
-    connection.onFileProgress = ({ downloaded, id }) => {
-      setDownloadProgress(id, downloaded);
-    };
+  }, [connection, addFiles, removeFile]);
+
+  useEffect(() => {
+    connection.onFileProgress = ({ downloaded, id }) => setDownloadProgress(id, downloaded);
     connection.onConnection = setConnectionStatus;
-  }, [connection, addFiles, removeFile, setDownloadProgress, setConnectionStatus]);
+  }, [connection, setDownloadProgress, setConnectionStatus]);
 
   useEffect(() => {
     connection.onFile = (file, info) => {

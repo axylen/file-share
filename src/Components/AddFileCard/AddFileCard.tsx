@@ -1,15 +1,13 @@
 import React, { useCallback } from 'react';
 import css from './AddFileCard.module.css';
+import { filterFiles } from 'lib/helpers';
+
+type ChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
 const AddFileCard: React.FC<{ onFileInput: (files: File[]) => void }> = ({ onFileInput }) => {
   const handleFileInput = useCallback(
-    (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(evt.target.files || []).filter((file) => {
-        if (file.size === 0) return false;
-        if (file.name.match(/lnk$/)) return false;
-        if (file.type === '' && file.size === 4096) return false;
-        return true;
-      });
+    (evt: ChangeEvent) => {
+      const files = filterFiles(Array.from(evt.target.files || []));
       if (files.length) onFileInput(files);
     },
     [onFileInput],

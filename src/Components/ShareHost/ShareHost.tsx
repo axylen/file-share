@@ -25,18 +25,19 @@ const SpinnerComp = (
 );
 
 const ShareHost: React.FC<IShareHostProps> = ({ files, addFiles, removeFile, connectionStatus }) => {
-  const mainText = connectionStatus === 'connected' ? 'Files can be downloaded now' : 'Share this link';
-  const leadText = connectionStatus === 'connected' ? "don't close the tab until files are downloaded" : SpinnerComp;
+  const isConnected = connectionStatus === 'connected';
+  const mainText = isConnected ? 'Files can be downloaded now' : 'Share this link';
+  const leadText = isConnected ? "don't close the tab until files are downloaded" : SpinnerComp;
 
   return (
     <>
       <Header main={mainText} lead={leadText} />
       <div className={css.connectionBox}>
-        {connectionStatus !== 'connected' ? <InputToClipboard text={window.location.href} /> : <div className={css.connectionStatus}>Connected</div>}
+        {isConnected ? <div className={css.connectionStatus}>Connected</div> : <InputToClipboard text={window.location.href} />}
       </div>
       <main className={css.container}>
         <h2 className={css.heading}>Files</h2>
-        <FileList files={files} appendComponent={<AddFileCard onFileInput={addFiles} />} onFileClick={removeFile} iconOnHover="file-delete"/>
+        <FileList files={files} appendComponent={<AddFileCard onFileInput={addFiles} />} onFileClick={removeFile} iconOnHover="file-delete" />
       </main>
       <FileInput onFileInput={addFiles} noFocus />
     </>

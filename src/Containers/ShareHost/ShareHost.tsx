@@ -28,10 +28,7 @@ const ShareHost: React.FC<IShareHostProps> = ({ connection, files, addFiles, rem
   const handleAddFiles = useCallback(
     (files: File[]) => {
       const { payload } = addFiles(files);
-      connection.sendJSON({
-        action: 'addFiles',
-        files: formatFileData(payload),
-      });
+      connection.sendJSON({ action: 'addFiles', files: formatFileData(payload) });
     },
     [connection, addFiles],
   );
@@ -39,10 +36,7 @@ const ShareHost: React.FC<IShareHostProps> = ({ connection, files, addFiles, rem
   const handleRemoveFile = useCallback(
     (id: string) => {
       removeFile(id);
-      connection.sendJSON({
-        action: 'removeFile',
-        id,
-      });
+      connection.sendJSON({ action: 'removeFile', id });
     },
     [connection, removeFile],
   );

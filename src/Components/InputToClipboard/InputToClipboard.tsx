@@ -16,11 +16,9 @@ const InputToClipboard: React.FC<IInputToClipboardProps> = ({ text }) => {
     navigator.clipboard.writeText(text);
   };
 
-  const handleInputFocus = (evt: React.FocusEvent<HTMLInputElement>) => evt.target.select();
-
   return (
     <div className={css.inputGroup}>
-      <input ref={urlInput} className={css.input} readOnly value={text} onFocus={handleInputFocus} autoFocus />
+      <input ref={urlInput} className={css.input} readOnly value={text} onFocus={(evt) => evt.target.select()} autoFocus />
       <button className={css.btn} onClick={handleClick}>
         <svg className={css.icon} xmlns="http://www.w3.org/2000/svg">
           <use href="icons.svg#copy" />
