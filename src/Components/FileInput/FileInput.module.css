@@ -4,9 +4,15 @@
   height: 100%;
   padding: 30px;
 
-  background-color: var(--color-primary-60);
+  background-color: var(--color-primary);
+}
 
-  backdrop-filter: blur(10px);
+@supports (backdrop-filter: blur(0)) {
+  .input {
+    background-color: var(--color-primary-60);
+
+    backdrop-filter: blur(10px);
+  }
 }
 
 .input::before {
