@@ -5,6 +5,14 @@ import Home from 'Pages/Home';
 import Share from 'Pages/Share';
 
 function App() {
+  if (!RTCDataChannel) {
+    return (
+      <div className="App">
+        <h1 style={{ textAlign: 'center', fontWeight: 600 }}>Your browser doesn't support used technology :(</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <HashRouter>
