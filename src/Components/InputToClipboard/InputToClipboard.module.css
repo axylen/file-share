@@ -32,6 +32,7 @@
   height: 100%;
 
   transition: color .1s, background-color .1s;
+  transition: .12s ease-in-out;
 
   color: var(--color-text);
   border: 2px solid var(--color-secondary);
@@ -42,7 +43,10 @@
 
 .btn:focus,
 .btn:hover {
+  transform: scale(1.05);
+
   color: var(--color-text-inverse);
+  box-shadow: 0 0 4px var(--color-text-inverse);
 }
 
 .icon {

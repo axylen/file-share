@@ -6,10 +6,16 @@
   height: 200px;
 
   cursor: pointer;
+  transition: transform .12s ease-in-out;
 
   color: var(--color-text-inverse);
   border-radius: 5px;
   background-color: var(--color-secondary);
+}
+
+.addFiles:focus-within,
+.addFiles:hover {
+  transform: scale(1.05);
 }
 
 .icon {
