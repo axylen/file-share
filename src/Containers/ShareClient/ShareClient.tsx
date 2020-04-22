@@ -49,6 +49,22 @@ const ShareClient: React.FC<ISShareClientProps> = ({ connection, connectionStatu
     };
   }, [connection, saveFileData]);
 
+  useEffect(() => {
+    const handleDragOver = (evt: DragEvent) => {
+      evt.preventDefault();
+      if (evt.dataTransfer) evt.dataTransfer.dropEffect = 'none';
+    };
+    const handleDrop = (evt: DragEvent) => evt.preventDefault();
+
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('drop', handleDrop);
+
+    return () => {
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('drop', handleDrop);
+    };
+  }, []);
+
   const handleRequestFile = useCallback(
     (id: string) => {
       const file = files[id];
