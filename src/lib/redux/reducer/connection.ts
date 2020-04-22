@@ -30,7 +30,8 @@ type Action = IConnectionAction | IConnectionStatusAction;
 export default (state: IConnectionInfo = initState, action: Action): IConnectionInfo => {
   switch (action.type) {
     case SET_CONNECTION:
-      return { ...state, ...action.payload };
+      if (state.connection) state.connection.destroy();
+      return { ...state, ...action.payload, status: 'new' };
     case SET_CONNECTION_STATUS:
       return { ...state, ...action.payload };
   }

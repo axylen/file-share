@@ -25,17 +25,23 @@ class WebRTCConnection {
 
     messageChannel.onmessage = (evt) => this.onMessage(evt.data);
 
-    connection.addEventListener('datachannel', ({ channel }) => {
-      if (channel.label === 'message') this.messageChannel = channel;
-    });
-    connection.addEventListener('iceconnectionstatechange', () => {
-      this.onConnection(connection.iceConnectionState);
-    });
+    connection.addEventListener('datachannel', this._handleDataChannel);
+    connection.addEventListener('iceconnectionstatechange', this._handleIceconnectionstatechange);
   }
 
   get description() {
     return JSON.stringify(this.connection.localDescription);
   }
+
+  destroy = () => {
+    this.connection.removeEventListener('datachannel', this._handleDataChannel);
+    this.connection.removeEventListener('iceconnectionstatechange', this._handleIceconnectionstatechange);
+  };
+
+  _handleDataChannel = ({ channel }: RTCDataChannelEvent) => {
+    if (channel.label === 'message') this.messageChannel = channel;
+  };
+  _handleIceconnectionstatechange = () => this.onConnection(this.connection.iceConnectionState);
 
   createOffer = () => {
     const { connection } = this;
@@ -45,7 +51,9 @@ class WebRTCConnection {
 
       await connection.setLocalDescription(await connection.createOffer());
 
-      connection.iceGatheringState !== 'complete' && resolve(this.description);
+      setTimeout(() => {
+        connection.iceGatheringState !== 'complete' && resolve(this.description);
+      }, 2000);
     });
   };
 

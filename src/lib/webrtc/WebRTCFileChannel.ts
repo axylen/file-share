@@ -17,18 +17,24 @@ interface IFileTransferInfo {
 class WebRTCFileChannel {
   channel: RTCDataChannel;
   private file: FileData | undefined;
+  private connection: RTCPeerConnection;
 
   onFileReady = (file: Blob, info: FileInfo): void => {};
   onFileProgress = (info: { size: number; downloaded: number; id: string }): void => {};
 
   constructor(connection: RTCPeerConnection, label: string) {
     this.channel = connection.createDataChannel(label);
-    connection.addEventListener('datachannel', (evt) => {
-      if (evt.channel.label === label) this.channel = evt.channel;
-    });
+    this.connection = connection;
+    connection.addEventListener('datachannel', this._handleDataChannel);
 
     this.channel.onmessage = (evt) => this.fileMessage(evt.data);
   }
+
+  _handleDataChannel = (evt: RTCDataChannelEvent) => {
+    if (evt.channel.label === this.channel.label) this.channel = evt.channel;
+  };
+
+  destroy = () => this.connection.removeEventListener('datachannel', this._handleDataChannel);
 
   private fileMessage = (data: ArrayBuffer | string) => {
     if (typeof data !== 'string') {
@@ -87,7 +93,7 @@ class WebRTCFileChannel {
     if (!queue.length) return;
 
     const { file, id } = queue[0];
-    const chunkSize = 4 * 1024;
+    const chunkSize = 2 * 1024;
 
     let offset = 0;
     let isStarted = false;

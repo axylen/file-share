@@ -22,6 +22,12 @@ class WebRTCWithFileChannel extends WebRTCConnection {
     this.messageChannel.onmessage = this._onMessage;
   }
 
+  destroy = () => {
+    this.connection.removeEventListener('datachannel', this._handleDataChannel);
+    this.connection.removeEventListener('iceconnectionstatechange', this._handleIceconnectionstatechange);
+    this.fileChannel.destroy();
+  };
+
   private _onMessage = (evt: MessageEvent) => {
     const asObj = tryParseJSON(evt.data);
 
