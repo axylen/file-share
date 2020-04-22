@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { clientAddFiles, clientRemoveFile, setDownloadProgress, saveFileData, setConnectionStatus } from 'lib/redux';
 import { tryParseJSON, saveFile } from 'lib/helpers';
@@ -18,6 +19,8 @@ interface ISShareClientProps {
 }
 
 const ShareClient: React.FC<ISShareClientProps> = ({ connection, connectionStatus, files, addFiles, removeFile, setDownloadProgress, saveFileData, setConnectionStatus }) => {
+  const history = useHistory();
+
   useEffect(() => {
     connection.onMessage = (msg) => {
       const obj = tryParseJSON(msg);
@@ -33,8 +36,11 @@ const ShareClient: React.FC<ISShareClientProps> = ({ connection, connectionStatu
 
   useEffect(() => {
     connection.onFileProgress = ({ downloaded, id }) => setDownloadProgress(id, downloaded);
-    connection.onConnection = setConnectionStatus;
-  }, [connection, setDownloadProgress, setConnectionStatus]);
+    connection.onConnection = (status) => {
+      setConnectionStatus(status);
+      if (status === 'disconnected') history.push('/');
+    };
+  }, [connection, setDownloadProgress, setConnectionStatus, history]);
 
   useEffect(() => {
     connection.onFile = (file, info) => {

@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { hostAddFiles, hostRemoveFile, setConnectionStatus } from 'lib/redux';
 import { formatFileData } from 'lib/helpers';
@@ -16,14 +17,17 @@ interface IShareHostProps {
 }
 
 const ShareHost: React.FC<IShareHostProps> = ({ connection, files, addFiles, removeFile, connectionStatus, setConnectionStatus }) => {
+  const history = useHistory();
+
   useEffect(() => {
     connection.onRequestFile = (id) => files[id];
     connection.onConnection = (status) => {
       setConnectionStatus(status);
+      if (status === 'disconnected') return history.push('/');
       if (status !== 'connected') return;
       connection.sendJSON({ action: 'addFiles', files: formatFileData(files) });
     };
-  }, [connection, files, setConnectionStatus]);
+  }, [connection, files, setConnectionStatus, history]);
 
   const handleAddFiles = useCallback(
     (files: File[]) => {
