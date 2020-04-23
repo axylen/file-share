@@ -25,8 +25,8 @@ class WebRTCConnection {
 
     messageChannel.onmessage = (evt) => this.onMessage(evt.data);
 
-    connection.addEventListener('datachannel', this._handleDataChannel);
-    connection.addEventListener('iceconnectionstatechange', this._handleIceconnectionstatechange);
+    connection.ondatachannel = (evt) => this.handleDataChannel(evt);
+    connection.oniceconnectionstatechange = () => this.onConnection(connection.iceConnectionState);
   }
 
   get description() {
@@ -34,14 +34,13 @@ class WebRTCConnection {
   }
 
   destroy = () => {
-    this.connection.removeEventListener('datachannel', this._handleDataChannel);
-    this.connection.removeEventListener('iceconnectionstatechange', this._handleIceconnectionstatechange);
+    this.connection.ondatachannel = null;
+    this.connection.oniceconnectionstatechange = null;
   };
 
-  _handleDataChannel = ({ channel }: RTCDataChannelEvent) => {
+  handleDataChannel = ({ channel }: RTCDataChannelEvent) => {
     if (channel.label === 'message') this.messageChannel = channel;
   };
-  _handleIceconnectionstatechange = () => this.onConnection(this.connection.iceConnectionState);
 
   createOffer = () => {
     const { connection } = this;

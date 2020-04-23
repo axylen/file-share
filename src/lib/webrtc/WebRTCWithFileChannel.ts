@@ -13,19 +13,20 @@ class WebRTCWithFileChannel extends WebRTCConnection {
   constructor(config?: RTCConfiguration) {
     super(config);
 
-    const fileChannel = new WebRTCFileChannel(this.connection, 'file');
+    const fileDataChannel = this.connection.createDataChannel('file');
+    const fileChannel = new WebRTCFileChannel(fileDataChannel, this.connection.sctp?.maxMessageSize);
     this.fileChannel = fileChannel;
 
     fileChannel.onFileReady = (file, info) => this.onFile(file, info);
     fileChannel.onFileProgress = (info) => this.onFileProgress(info);
-
+    
+    fileDataChannel.onmessage = ({ data }) => fileChannel.onMessage(data);
     this.messageChannel.onmessage = this._onMessage;
   }
 
-  destroy = () => {
-    this.connection.removeEventListener('datachannel', this._handleDataChannel);
-    this.connection.removeEventListener('iceconnectionstatechange', this._handleIceconnectionstatechange);
-    this.fileChannel.destroy();
+  handleDataChannel = ({ channel }: RTCDataChannelEvent) => {
+    if (channel.label === 'message') this.messageChannel = channel;
+    if (channel.label === 'file') this.fileChannel.channel = channel;
   };
 
   private _onMessage = (evt: MessageEvent) => {
