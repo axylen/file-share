@@ -23,8 +23,9 @@
 }
 
 .spinner {
-  width: 32px;
-  height: 32px;
+  width: 64px;
+  height: 64px;
+  margin: 32px auto;
 }
 
 .connectionStatus {
@@ -41,7 +42,9 @@
 
 .noFiles {
   font-size: 24px;
-  text-align: center;
   font-weight: 600;
+
   margin: 0;
+
+  text-align: center;
 }

@@ -7,7 +7,7 @@ import Share from 'Pages/Share';
 function App() {
   return (
     <div className="App">
-      <HashRouter>
+      <HashRouter hashType="noslash">
         <Switch>
           <Route path="/:id">
             <Share />

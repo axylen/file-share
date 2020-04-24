@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ShareHost from 'Containers/ShareHost';
@@ -23,8 +23,7 @@ const Share: React.FC<IShareProps> = ({ isHost, connection, clientSetConnection 
   }
 
   if (isHost || !id) {
-    history.replace('/');
-    return <></>;
+    return <Redirect to="/" />;
   }
 
   const newConnection = new WebRTCWithFileChannel();
@@ -39,9 +38,7 @@ const Share: React.FC<IShareProps> = ({ isHost, connection, clientSetConnection 
       return newConnection.connect(offer);
     })
     .then((answer) => firebaseConnection.sendAnswer(id, answer))
-    .catch(() => {
-      history.replace('/');
-    });
+    .catch(() => history.replace('/'));
 
   return <div>Loading...</div>;
 };

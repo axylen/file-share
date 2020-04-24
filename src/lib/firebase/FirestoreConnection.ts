@@ -15,7 +15,10 @@ class FirestoreConnection {
   getOffer = async (id: string): Promise<string | void> => {
     const response = await this.doc(id).get();
     const data = response.data();
-    if (data) return data.offer;
+    if (data) {
+      if (data.answer) throw new Error('Was already connected');
+      return data.offer;
+    }
   };
 
   sendOffer = (offer: string) => this.add({ offer }).then(({ id }) => id);
