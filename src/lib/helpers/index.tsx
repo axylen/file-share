@@ -6,5 +6,6 @@ import formatFileData from './formatFileData';
 import saveFile from './saveFile';
 import filterFiles from './filterFiles';
 import getConnectionState from './getConnectionState';
+import readFileChunks from './readFileChunks';
 
-export { classnames, tryParseJSON, generateFileId, mapObject, formatFileData, saveFile, filterFiles, getConnectionState };
+export { classnames, tryParseJSON, generateFileId, mapObject, formatFileData, saveFile, filterFiles, getConnectionState, readFileChunks };

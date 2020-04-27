@@ -1,3 +1,5 @@
+import { readFileChunks } from 'lib/helpers';
+
 export type FileInfo = {
   id: string;
   name: string;
@@ -9,11 +11,6 @@ interface IFileTransferInfo {
   info?: FileInfo;
 }
 
-type readFileChunksCallbacks = {
-  onChunkLoad?: (chunk: ArrayBuffer) => void;
-  onLoaded?: (chunks: ArrayBuffer[]) => void;
-};
-
 class WebRTCFileChannel {
   channel: RTCDataChannel;
   chunkSize: number;
@@ -23,8 +20,6 @@ class WebRTCFileChannel {
     info: FileInfo;
     downloaded: number;
   };
-
-  startTime = 0;
 
   onFileReady = (file: Blob, info: FileInfo): void => {};
   onFileProgress = (info: { size: number; downloaded: number; id: string }): void => {};
@@ -57,18 +52,152 @@ class WebRTCFileChannel {
     this.onFileProgress({ size, id, downloaded });
   };
 
-  private onNewFile = (info: FileInfo) => {
-    this.startTime = performance.now();
+  protected onNewFile = (info: FileInfo) => {
     this.file = { data: [], downloaded: 0, info };
   };
 
-  private onFileDownloaded = (data: ArrayBuffer[], info: FileInfo) => {
-    console.log(this.speedStats(info.size));
-
+  protected onFileDownloaded = (data: ArrayBuffer[], info: FileInfo) => {
     const blob = new Blob(data);
     this.onFileReady(blob, info);
     this.file = undefined;
   };
+
+  sendingQueue: { id: string; file: File }[] = [];
+
+  sendFile = (file: File, id: string) => {
+    const queue = this.sendingQueue;
+    const hasInQueue = !!queue.find((file) => file.id === id);
+
+    if (hasInQueue) return;
+
+    queue.push({ file, id });
+
+    if (queue.length === 1) this._sendFile();
+  };
+
+  private _sendFile = () => {
+    if (!this.sendingQueue.length) return;
+
+    const { file, id } = this.sendingQueue[0];
+    this.sendFileInfo(id, file.name, file.size);
+
+    const chunks = readFileChunks(file, {
+      onChunkLoad: () => sendData(),
+      chunkSize: this.chunkSize,
+    });
+
+    const sendData = this.sendData(chunks, file.size, id);
+    this.channel.onbufferedamountlow = sendData;
+  };
+
+  protected sendFileInfo = (id: string, name: string, size: number) => {
+    const info = {
+      status: 'new',
+      info: { id, name, size },
+    };
+
+    this.channel.send(JSON.stringify(info));
+  };
+
+  protected doneSendingFile = () => {
+    this.channel.onbufferedamountlow = null;
+    this.channel.send(JSON.stringify({ status: 'done' }));
+    this.sendingQueue.shift();
+    this._sendFile();
+  };
+
+  private sendData = (chunks: ArrayBuffer[], size: number, id: string) => {
+    const { channel, chunkSize } = this;
+    const highWaterMark = Math.max(chunkSize * 8, 1048576);
+    const sendChunk = this.sendChunks(chunks, size, id);
+
+    let isSending = false;
+
+    const send = () => {
+      if (isSending) return;
+      if (!chunks.length) return;
+
+      isSending = true;
+
+      let bufferedAmount = channel.bufferedAmount;
+
+      let done: boolean;
+      let value: number | 'noChunk';
+
+      do {
+        ({ done = false, value = 0 } = sendChunk.next());
+
+        if (value === 'noChunk') {
+          isSending = false;
+          return;
+        }
+
+        bufferedAmount += value;
+        if (bufferedAmount >= highWaterMark) {
+          if (channel.bufferedAmount < chunkSize) setTimeout(send, 0);
+
+          isSending = false;
+          return;
+        }
+      } while (!done);
+
+      this.doneSendingFile();
+    };
+
+    return send;
+  };
+
+  private *sendChunks(chunks: ArrayBuffer[], fileSize: number, id: string) {
+    let sentBytes = 0;
+    let i = 0;
+    while (sentBytes < fileSize) {
+      const chunk = chunks[i];
+      if (chunk) {
+        ++i;
+        this.channel.send(chunk);
+        sentBytes += chunk.byteLength;
+        this.onFileSendProgress({ size: fileSize, sent: sentBytes, id });
+        yield chunk.byteLength;
+      } else {
+        yield 'noChunk';
+      }
+    }
+  }
+}
+
+class WebRTCFileChannelWithLog extends WebRTCFileChannel {
+  startTime = 0;
+
+  constructor(channel: RTCDataChannel, chunkSize?: number) {
+    super(channel, chunkSize);
+
+    const doneSendingFileSuper = this.doneSendingFile;
+    const sendFileInfoSuper = this.sendFileInfo;
+    const onNewFileSuper = this.onNewFile;
+    const onFileDownloadedSuper = this.onFileDownloaded;
+
+    this.onNewFile = (info) => {
+      this.startTime = performance.now();
+      return onNewFileSuper(info);
+    };
+
+    this.onFileDownloaded = (data, info) => {
+      console.log(this.speedStats(info.size));
+      return onFileDownloadedSuper(data, info);
+    };
+
+    this.sendFileInfo = (...args) => {
+      this.startTime = performance.now();
+      return sendFileInfoSuper(...args);
+    };
+
+    this.doneSendingFile = () => {
+      const file = this.sendingQueue[0];
+      console.log(this.speedStats(file?.file.size || 1));
+
+      return doneSendingFileSuper();
+    };
+  }
 
   private speedStats = (fileSize: number) => {
     const time = (performance.now() - this.startTime) / 1000;
@@ -79,154 +208,6 @@ class WebRTCFileChannel {
       speed: `${(size / time).toFixed(2)} мб/сек`,
     };
   };
-
-  sendingQueue: { id: string; file: File }[] = [];
-
-  sendFile = (file: File, id: string) => {
-    const queue = this.sendingQueue;
-    const hasIdInQueue = !!queue.find((file) => file.id === id);
-
-    if (hasIdInQueue) return;
-
-    queue.push({ file, id });
-
-    if (queue.length === 1) this._sendFile();
-  };
-
-  private _sendFile = () => {
-    if (!this.sendingQueue.length) return;
-    const { file, id } = this.sendingQueue[0];
-
-    const chunks = this.readFileChunks(file, {
-      onChunkLoad: () => send(),
-    });
-    this.startSendingFile(id, file.name, file.size);
-
-    const send = this.sendData(chunks, file.size, id);
-
-    this.channel.onbufferedamountlow = send;
-  };
-
-  private startSendingFile = (id: string, name: string, size: number) => {
-    this.startTime = performance.now();
-
-    const info = {
-      status: 'new',
-      info: { id, name, size },
-    };
-
-    this.channel.send(JSON.stringify(info));
-  };
-
-  private doneSendingFile = () => {
-    this.channel.onbufferedamountlow = null;
-    this.channel.send(JSON.stringify({ status: 'done' }));
-    const file = this.sendingQueue.shift();
-
-    console.log(this.speedStats(file?.file.size || 1));
-
-    this._sendFile();
-  };
-
-  splitBuffer = (buf: ArrayBuffer, chunkSize: number) => {
-    let offset = 0;
-
-    const chunks = [];
-
-    while (offset < buf.byteLength) {
-      chunks.push(buf.slice(offset, offset + chunkSize));
-      offset += chunkSize;
-    }
-
-    return chunks;
-  };
-
-  readFileChunks = (file: File, cb: readFileChunksCallbacks = {}) => {
-    const readChunkSize = 1024 * 1024 * 2;
-    const chunks: ArrayBuffer[] = [];
-
-    let offset = 0;
-    const reader = new FileReader();
-
-    const { onChunkLoad = () => {}, onLoaded = () => {} } = cb;
-
-    reader.onload = () => {
-      if (!reader.result || typeof reader.result === 'string') return;
-      chunks.push(...this.splitBuffer(reader.result, this.chunkSize));
-      offset += readChunkSize;
-      onChunkLoad(reader.result);
-    };
-
-    reader.onloadend = () => {
-      if (offset < file.size) {
-        reader.readAsArrayBuffer(file.slice(offset, offset + readChunkSize));
-      } else {
-        onLoaded(chunks);
-      }
-    };
-
-    reader.readAsArrayBuffer(file.slice(0, readChunkSize));
-
-    return chunks;
-  };
-
-  private sendData = (chunks: ArrayBuffer[], size: number, id: string) => {
-    const highWaterMark = Math.max(this.chunkSize * 8, 1048576);
-
-    let isSending = false;
-    const sendChunk = this.sendChunks(chunks, size, id);
-
-    const send = () => {
-      if (isSending) return;
-      if (!chunks.length) return;
-
-      isSending = true;
-
-      let bufferedAmount = this.channel.bufferedAmount;
-
-      let res: IteratorResult<number, void>;
-
-      do {
-        res = sendChunk.next();
-        bufferedAmount += res.value || 0;
-
-        if (!res.done && res.value === 0) {
-          isSending = false;
-          return;
-        }
-
-        if (bufferedAmount >= highWaterMark) {
-          if (this.channel.bufferedAmount < this.chunkSize) {
-            setTimeout(send, 0);
-          }
-
-          isSending = false;
-          return;
-        }
-      } while (!res.done);
-
-      this.doneSendingFile();
-    };
-
-    return send;
-  };
-
-  private *sendChunks(chunks: ArrayBuffer[], fileSize: number, id: string) {
-    let sendedBytes = 0;
-    let i = 0;
-    while (sendedBytes < fileSize) {
-      const chunk = chunks[i];
-      if (chunk) {
-        i++;
-        this.channel.send(chunk);
-        sendedBytes += chunk.byteLength;
-        this.onFileSendProgress({ size: fileSize, sent: sendedBytes, id });
-        yield chunk.byteLength;
-      } else {
-        yield 0;
-      }
-    }
-  }
 }
 
-export default WebRTCFileChannel;
+export default WebRTCFileChannelWithLog;

@@ -15,14 +15,13 @@ class WebRTCWithFileChannel extends WebRTCConnection {
     super(config);
 
     const fileDataChannel = this.connection.createDataChannel('file');
-    const fileChannel = new WebRTCFileChannel(fileDataChannel, this.connection.sctp?.maxMessageSize);
-    this.fileChannel = fileChannel;
+    this.fileChannel = new WebRTCFileChannel(fileDataChannel, this.connection.sctp?.maxMessageSize);
 
-    fileChannel.onFileReady = (file, info) => this.onFile(file, info);
-    fileChannel.onFileProgress = (info) => this.onFileProgress(info);
-    fileChannel.onFileSendProgress = (info) => this.onFileSendProgress(info);
+    this.fileChannel.onFileReady = (file, info) => this.onFile(file, info);
+    this.fileChannel.onFileProgress = (info) => this.onFileProgress(info);
+    this.fileChannel.onFileSendProgress = (info) => this.onFileSendProgress(info);
 
-    fileDataChannel.onmessage = ({ data }) => fileChannel.onMessage(data);
+    fileDataChannel.onmessage = ({ data }) => this.fileChannel.onMessage(data);
     this.messageChannel.onmessage = this._onMessage;
   }
 
@@ -45,9 +44,7 @@ class WebRTCWithFileChannel extends WebRTCConnection {
 
   sendFile = (file: File, id: string) => this.fileChannel.sendFile(file, id);
 
-  requestFile = (id: string) => {
-    this.sendJSON({ action: 'sendFile', id });
-  };
+  requestFile = (id: string) => this.sendJSON({ action: 'sendFile', id });
 }
 
 export default WebRTCWithFileChannel;

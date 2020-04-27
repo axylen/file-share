@@ -16,17 +16,13 @@ class WebRTCConnection {
   onMessage = (msg: string) => {};
 
   constructor(config: RTCConfiguration = RTCPeerConnectionConfig) {
-    const connection = new RTCPeerConnection(config);
-    this.connection = connection;
+    this.connection = new RTCPeerConnection(config);
+    this.messageChannel = this.connection.createDataChannel('message');
 
-    const messageChannel = connection.createDataChannel('message');
+    this.messageChannel.onmessage = (evt) => this.onMessage(evt.data);
 
-    this.messageChannel = messageChannel;
-
-    messageChannel.onmessage = (evt) => this.onMessage(evt.data);
-
-    connection.ondatachannel = (evt) => this.handleDataChannel(evt);
-    connection.oniceconnectionstatechange = () => this.onConnection(connection.iceConnectionState);
+    this.connection.ondatachannel = (evt) => this.handleDataChannel(evt);
+    this.connection.oniceconnectionstatechange = () => this.onConnection(this.connection.iceConnectionState);
   }
 
   get description() {
@@ -48,7 +44,8 @@ class WebRTCConnection {
     return new Promise<string>(async (resolve) => {
       connection.onicecandidate = ({ candidate }) => !candidate && resolve(this.description);
 
-      await connection.setLocalDescription(await connection.createOffer());
+      const offer = await connection.createOffer();
+      await connection.setLocalDescription(offer);
 
       setTimeout(() => {
         connection.iceGatheringState !== 'complete' && resolve(this.description);
@@ -66,7 +63,8 @@ class WebRTCConnection {
       if (remote.type !== 'offer') return resolve();
 
       connection.onicecandidate = ({ candidate }) => !candidate && resolve(this.description);
-      await connection.setLocalDescription(await connection.createAnswer());
+      const answer = await connection.createAnswer();
+      await connection.setLocalDescription(answer);
     });
   };
 
@@ -77,9 +75,7 @@ class WebRTCConnection {
     setTimeout(() => this.sendMessage(msg), 50);
   };
 
-  sendJSON = (obj: object): void => {
-    this.sendMessage(JSON.stringify(obj));
-  };
+  sendJSON = (obj: object): void => this.sendMessage(JSON.stringify(obj));
 }
 
 export default WebRTCConnection;
