@@ -2,8 +2,7 @@ import React from 'react';
 import { useHistory, useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import ShareHost from 'Containers/ShareHost';
-import ShareClient from 'Containers/ShareClient';
+import Share from 'Containers/Share';
 import { WebRTCWithFileChannel } from 'lib/webrtc';
 import { FirestoreConnection } from 'lib/firebase';
 import { clientSetConnection } from 'lib/redux';
@@ -14,12 +13,24 @@ interface IShareProps {
   clientSetConnection: typeof clientSetConnection;
 }
 
-const Share: React.FC<IShareProps> = ({ isHost, connection, clientSetConnection }) => {
+const establishConnection = (connection: WebRTCWithFileChannel, id: string) => {
+  const firebaseConnection = new FirestoreConnection();
+
+  return firebaseConnection
+    .getOffer(id)
+    .then((offer) => {
+      if (!offer) throw new Error(`Can't get offer`);
+      return connection.connect(offer);
+    })
+    .then((answer) => firebaseConnection.sendAnswer(id, answer));
+};
+
+const SharePage: React.FC<IShareProps> = ({ isHost, connection, clientSetConnection }) => {
   const history = useHistory();
   const { id } = useParams();
 
   if (connection) {
-    return isHost ? <ShareHost connection={connection} /> : <ShareClient connection={connection} />;
+    return <Share connection={connection} />;
   }
 
   if (isHost || !id) {
@@ -27,18 +38,9 @@ const Share: React.FC<IShareProps> = ({ isHost, connection, clientSetConnection 
   }
 
   const newConnection = new WebRTCWithFileChannel();
-  const firebaseConnection = new FirestoreConnection();
-
   clientSetConnection(newConnection);
 
-  firebaseConnection
-    .getOffer(id)
-    .then((offer) => {
-      if (!offer) throw new Error(`Can't get offer`);
-      return newConnection.connect(offer);
-    })
-    .then((answer) => firebaseConnection.sendAnswer(id, answer))
-    .catch(() => history.replace('/'));
+  establishConnection(newConnection, id).catch(() => history.replace('/'));
 
   return <div>Loading...</div>;
 };
@@ -50,4 +52,4 @@ const mapStateToProps = (state: ReduxStore) => {
   };
 };
 
-export default connect(mapStateToProps, { clientSetConnection })(Share);
+export default connect(mapStateToProps, { clientSetConnection })(SharePage);

@@ -26,7 +26,7 @@ export const setConnectionStatus = (status: RTCIceConnectionState): IConnectionS
 });
 
 export const hostAddFiles = (files: File[]): IHostAddFilesAction => {
-  const filesWithId: { [key: string]: File } = {};
+  const filesWithId: IHostFileStorage = {};
   files.forEach((file) => (filesWithId[generateFileId(file)] = file));
 
   return { type: HOST_ADD_FILES, payload: filesWithId };

@@ -28,6 +28,7 @@ class WebRTCFileChannel {
 
   onFileReady = (file: Blob, info: FileInfo): void => {};
   onFileProgress = (info: { size: number; downloaded: number; id: string }): void => {};
+  onFileSendProgress = (info: { size: number; sent: number; id: string }): void => {};
 
   constructor(channel: RTCDataChannel, chunkSize = 16 * 1024) {
     this.channel = channel;
@@ -101,7 +102,7 @@ class WebRTCFileChannel {
     });
     this.startSendingFile(id, file.name, file.size);
 
-    const send = this.sendData(chunks, file.size);
+    const send = this.sendData(chunks, file.size, id);
 
     this.channel.onbufferedamountlow = send;
   };
@@ -169,11 +170,11 @@ class WebRTCFileChannel {
     return chunks;
   };
 
-  private sendData = (chunks: ArrayBuffer[], size: number) => {
+  private sendData = (chunks: ArrayBuffer[], size: number, id: string) => {
     const highWaterMark = Math.max(this.chunkSize * 8, 1048576);
 
     let isSending = false;
-    const sendChunk = this.sendChunks(chunks, size);
+    const sendChunk = this.sendChunks(chunks, size, id);
 
     const send = () => {
       if (isSending) return;
@@ -210,7 +211,7 @@ class WebRTCFileChannel {
     return send;
   };
 
-  private *sendChunks(chunks: ArrayBuffer[], fileSize: number) {
+  private *sendChunks(chunks: ArrayBuffer[], fileSize: number, id: string) {
     let sendedBytes = 0;
     let i = 0;
     while (sendedBytes < fileSize) {
@@ -219,6 +220,7 @@ class WebRTCFileChannel {
         i++;
         this.channel.send(chunk);
         sendedBytes += chunk.byteLength;
+        this.onFileSendProgress({ size: fileSize, sent: sendedBytes, id });
         yield chunk.byteLength;
       } else {
         yield 0;

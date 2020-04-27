@@ -1,15 +1,13 @@
 import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
 import { clientAddFiles, clientRemoveFile, setDownloadProgress, saveFileData, setConnectionStatus } from 'lib/redux';
-import { tryParseJSON, saveFile } from 'lib/helpers';
+import { saveFile } from 'lib/helpers';
 
-import Share from 'Components/ShareClient';
+import RemoteFilesUI from 'Components/RemoteFiles';
 
-interface ISShareClientProps {
+interface ISRemoteFilesProps {
   connection: WebRTCWithFileChannel;
-  connectionStatus: RTCIceConnectionState;
   files: IClientFileStorage;
   addFiles: typeof clientAddFiles;
   removeFile: typeof clientRemoveFile;
@@ -18,29 +16,10 @@ interface ISShareClientProps {
   setConnectionStatus: typeof setConnectionStatus;
 }
 
-const ShareClient: React.FC<ISShareClientProps> = ({ connection, connectionStatus, files, addFiles, removeFile, setDownloadProgress, saveFileData, setConnectionStatus }) => {
-  const history = useHistory();
-
-  useEffect(() => {
-    connection.onMessage = (msg) => {
-      const obj = tryParseJSON(msg);
-      if (!obj) return;
-      switch (obj.action) {
-        case 'addFiles':
-          return addFiles(obj.files);
-        case 'removeFile':
-          return removeFile(obj.id);
-      }
-    };
-  }, [connection, addFiles, removeFile]);
-
+const RemoteFiles: React.FC<ISRemoteFilesProps> = ({ connection, files, addFiles, removeFile, setDownloadProgress, saveFileData, setConnectionStatus }) => {
   useEffect(() => {
     connection.onFileProgress = ({ downloaded, id }) => setDownloadProgress(id, downloaded);
-    connection.onConnection = (status) => {
-      setConnectionStatus(status);
-      if (status === 'disconnected') history.push('/');
-    };
-  }, [connection, setDownloadProgress, setConnectionStatus, history]);
+  }, [connection, setDownloadProgress]);
 
   useEffect(() => {
     connection.onFile = (file, info) => {
@@ -48,22 +27,6 @@ const ShareClient: React.FC<ISShareClientProps> = ({ connection, connectionStatu
       saveFile(file, info.name);
     };
   }, [connection, saveFileData]);
-
-  useEffect(() => {
-    const handleDragOver = (evt: DragEvent) => {
-      evt.preventDefault();
-      if (evt.dataTransfer) evt.dataTransfer.dropEffect = 'none';
-    };
-    const handleDrop = (evt: DragEvent) => evt.preventDefault();
-
-    window.addEventListener('dragover', handleDragOver);
-    window.addEventListener('drop', handleDrop);
-
-    return () => {
-      window.removeEventListener('dragover', handleDragOver);
-      window.removeEventListener('drop', handleDrop);
-    };
-  }, []);
 
   const handleRequestFile = useCallback(
     (id: string) => {
@@ -84,7 +47,7 @@ const ShareClient: React.FC<ISShareClientProps> = ({ connection, connectionStatu
     return fileInfo;
   });
 
-  return <Share files={filesList} requestFile={handleRequestFile} connectionStatus={connectionStatus} />;
+  return <RemoteFilesUI files={filesList} requestFile={handleRequestFile} />;
 };
 
 const mapStateToProps = (state: ReduxStore) => ({ files: state.clientFiles, connectionStatus: state.connection.status });
@@ -95,4 +58,4 @@ export default connect(mapStateToProps, {
   setDownloadProgress,
   saveFileData,
   setConnectionStatus,
-})(ShareClient);
+})(RemoteFiles);

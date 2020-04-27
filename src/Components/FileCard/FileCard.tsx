@@ -27,7 +27,7 @@ const getIcon = (extention: string) => {
 };
 
 const FileCard: React.FC<IFileCardProps> = ({ name, id, onClick, progress, iconOnHover }) => {
-  const res = name.match(/\.([a-zA-Z0-9])+$/);
+  const res = name.match(/\.([a-zA-Z0-9]+)$/);
   const extention = res ? res[1] : '';
   const icon = getIcon(extention);
 

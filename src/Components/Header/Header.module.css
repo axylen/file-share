@@ -1,22 +1,47 @@
 .header {
-  padding: 35px 20px 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  text-align: center;
+  height: 70px;
+
+  background-color: var(--color-primary);
 }
 
-.header__heading {
-  font-size: 32px;
-  font-weight: 700;
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  margin: 0;
-
-  text-transform: capitalize;
+  width: 100%;
+  max-width: 1520px;
+  margin: 0 20px;
 }
 
-.header__lead {
-  font-size: 16px;
+.connectionState {
+  display: flex;
+  align-items: baseline;
+}
 
-  margin: 0;
+.connectionStatus {
+  display: block;
 
-  text-transform: lowercase;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+
+  border-radius: 50%;
+  background-color: var(--color-secondary);
+}
+
+.connectionStatus_connected {
+  background-color: var(--color-progress);
+}
+
+.disconnect {
+  padding: 10px;
+
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  background-color: transparent;
 }
