@@ -1,9 +1,5 @@
-import {
-  CLIENT_ADD_FILES,
-  CLIENT_REMOVE_FILE,
-  SET_DOWNLOAD_PROGRESS,
-  SAVE_FILE_DATA,
-} from '../action';
+import { CLIENT_ADD_FILES, CLIENT_REMOVE_FILE, SET_DOWNLOAD_PROGRESS, SAVE_FILE_DATA } from '../action';
+import { removeKey } from 'lib/helpers';
 
 declare global {
   interface IClientFileStorage {
@@ -32,11 +28,19 @@ declare global {
   }
 }
 
-type Action =
-  | IClientAddFilesAction
-  | IClientRemoveFileAction
-  | IClientDownloadProgressAction
-  | IClientSaveFileDataAction;
+type Action = IClientAddFilesAction | IClientRemoveFileAction | IClientDownloadProgressAction | IClientSaveFileDataAction;
+
+const setDownloadProgress = (state: IClientFileStorage, action: IClientDownloadProgressAction) => {
+  const files = { ...state };
+  files[action.payload.id].downloadedSize = action.payload.downloadedSize;
+  return files;
+};
+
+const saveFileData = (state: IClientFileStorage, action: IClientSaveFileDataAction) => {
+  const files = { ...state };
+  files[action.payload.id].file = action.payload.file;
+  return files;
+};
 
 const initState: IClientFileStorage = {};
 
@@ -45,18 +49,12 @@ export default (state: IClientFileStorage = initState, action: Action): IClientF
     case CLIENT_ADD_FILES:
       return { ...state, ...action.payload };
     case CLIENT_REMOVE_FILE:
-      const { [action.payload.id]: deleted, ...files } = state;
-      return files;
-    case SET_DOWNLOAD_PROGRESS: {
-      const files = { ...state };
-      files[action.payload.id].downloadedSize = action.payload.downloadedSize;
-      return files;
-    }
-    case SAVE_FILE_DATA: {
-      const files = { ...state };
-      files[action.payload.id].file = action.payload.file;
-      return files;
-    }
+      return removeKey(state, action.payload.id).val;
+    case SET_DOWNLOAD_PROGRESS:
+      return setDownloadProgress(state, action);
+    case SAVE_FILE_DATA:
+      return saveFileData(state, action);
   }
+
   return state;
 };

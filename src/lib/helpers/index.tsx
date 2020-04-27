@@ -7,5 +7,6 @@ import saveFile from './saveFile';
 import filterFiles from './filterFiles';
 import getConnectionState from './getConnectionState';
 import readFileChunks from './readFileChunks';
+import removeKey from './removeKey';
 
-export { classnames, tryParseJSON, generateFileId, mapObject, formatFileData, saveFile, filterFiles, getConnectionState, readFileChunks };
+export { classnames, tryParseJSON, generateFileId, mapObject, formatFileData, saveFile, filterFiles, getConnectionState, readFileChunks, removeKey };

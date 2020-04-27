@@ -1,4 +1,5 @@
 import { HOST_ADD_FILES, HOST_REMOVE_FILE, HOST_CLEAR_FILES } from '../action';
+import { removeKey } from 'lib/helpers';
 
 declare global {
   interface IHostFileStorage {
@@ -16,6 +17,7 @@ declare global {
     type: typeof HOST_CLEAR_FILES;
   }
 }
+
 type Action = IHostAddFilesAction | IHostRemoveFileAction | IHostClearFilesAction;
 
 const initState: IHostFileStorage = {};
@@ -25,10 +27,10 @@ export default (state: IHostFileStorage = initState, action: Action): IHostFileS
     case HOST_ADD_FILES:
       return { ...state, ...action.payload };
     case HOST_REMOVE_FILE:
-      const { [action.payload.id]: deleted, ...files } = state;
-      return files;
+      return removeKey(state, action.payload.id).val;
     case HOST_CLEAR_FILES:
       return {};
   }
+
   return state;
 };
