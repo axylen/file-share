@@ -4,7 +4,7 @@
   width: 100%;
   max-width: 400px;
 
-  color: var(--color-text-inverse);
+  color: var(--color-text);
 }
 
 .input {
@@ -13,10 +13,11 @@
 
   text-overflow: ellipsis;
 
-  border: 2px solid var(--color-secondary);
+  border: 2px solid var(--color-card);
   border-radius: 5px;
   outline: none;
-  background-color: var(--color-secondary);
+  background-color: var(--color-card);
+  box-shadow: var(--shadow);
 }
 
 .btn {
@@ -35,18 +36,15 @@
   transition: .12s ease-in-out;
 
   color: var(--color-text);
-  border: 2px solid var(--color-secondary);
+  border: 2px solid var(--color-card);
   border-radius: 5px;
   outline: none;
-  background-color: var(--color-primary);
+  background-color: var(--color-card-secondary);
 }
 
 .btn:focus,
 .btn:hover {
-  transform: scale(1.05);
-
-  color: var(--color-text-inverse);
-  box-shadow: 0 0 4px var(--color-text-inverse);
+  border-color: var(--color-icon);
 }
 
 .icon {

@@ -13,7 +13,7 @@ const Header: React.FC<IHeaderProps> = ({ isHost, isConnected, onDisconnectClick
   const connectionStatus = getConnectionState(isHost, isConnected);
 
   const advice = {
-    connected: 'Click on file to start downloading it',
+    connected: 'Click on remote file to start downloading it',
     hostWaiting: 'Click on your file to remove it',
     clientWaiting: 'Click on your file to remove it',
   }[connectionStatus];

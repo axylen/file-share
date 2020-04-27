@@ -4,6 +4,8 @@ import FileList from 'Components/FileList';
 import AddFileCard from 'Components/AddFileCard';
 import FileInput from 'Components/FileInput';
 
+import css from './LocalFiles.module.css';
+
 interface ILocalFilesProps {
   files: { id: string; name: string; progress?: number }[];
   addFiles: (files: File[]) => void;
@@ -12,10 +14,10 @@ interface ILocalFilesProps {
 
 const LocalFiles: React.FC<ILocalFilesProps> = ({ files, addFiles, removeFile }) => {
   return (
-    <>
+    <div className={css.container}>
       <FileList files={files} iconOnHover="file-delete" onFileClick={removeFile} appendComponent={<AddFileCard onFileInput={addFiles} />} />
       <FileInput onFileInput={addFiles} noFocus />
-    </>
+    </div>
   );
 };
 

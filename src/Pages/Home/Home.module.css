@@ -35,12 +35,12 @@
 
   height: 100%;
 
-  background-color: var(--color-primary);
+  background-color: var(--color-background);
 }
 
 @supports (backdrop-filter: blur(0)) {
   .backdrop {
-    background-color: var(--color-primary-60);
+    background-color: var(--color-background-60);
 
     backdrop-filter: blur(10px);
   }

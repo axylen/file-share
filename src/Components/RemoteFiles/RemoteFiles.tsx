@@ -10,7 +10,11 @@ interface IRemoteFilesProps {
 
 const RemoteFiles: React.FC<IRemoteFilesProps> = ({ files, requestFile }) => {
   if (!files.length) return <div className={css.noFiles}>There's no files yet :(</div>;
-  return <FileList files={files} onFileClick={requestFile} iconOnHover="file-download" />;
+  return (
+    <div className={css.container}>
+      <FileList files={files} onFileClick={requestFile} iconOnHover="file-download" />
+    </div>
+  );
 };
 
 export default RemoteFiles;

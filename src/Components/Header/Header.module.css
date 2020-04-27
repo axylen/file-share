@@ -1,47 +1,69 @@
 .header {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
   height: 70px;
 
-  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  background-color: var(--color-header);
+  box-shadow: var(--shadow);
 }
 
 .container {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: space-between;
 
   width: 100%;
   max-width: 1520px;
   margin: 0 20px;
+
+  grid-template-columns: 1fr max-content 1fr;
 }
 
 .connectionState {
-  display: flex;
-  align-items: baseline;
+  position: relative;
 }
 
 .connectionStatus {
-  display: block;
+  position: absolute;
+  top: 50%;
+  left: -10px;
 
   width: 10px;
   height: 10px;
   margin-right: 10px;
 
+  transform: translate(-100%, -40%);
+
   border-radius: 50%;
-  background-color: var(--color-secondary);
+  background-color: var(--color-in-progress);
 }
 
 .connectionStatus_connected {
-  background-color: var(--color-progress);
+  background-color: var(--color-success);
 }
 
 .disconnect {
   padding: 10px;
 
+  transition: .12s ease-in-out;
+
   border: 1px solid currentColor;
   border-radius: 5px;
-  background-color: transparent;
+  outline: none;
+  background-color: var(--color-header);
+  box-shadow: var(--shadow);
+
+  justify-self: end;
+}
+
+.disconnect:hover,
+.disconnect:focus {
+  color: var(--color-header);
+  background-color: var(--color-text-inverse);
 }

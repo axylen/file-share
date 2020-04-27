@@ -8,14 +8,17 @@
   cursor: pointer;
   transition: transform .12s ease-in-out;
 
-  color: var(--color-text-inverse);
+  color: var(--color-text);
   border-radius: 5px;
-  background-color: var(--color-secondary);
+  background-color: var(--color-card);
+  box-shadow: var(--shadow);
 }
 
-.addFiles:focus-within,
-.addFiles:hover {
-  transform: scale(1.05);
+.addFiles:focus-within .icon,
+.addFiles:hover .icon {
+  transform: scale(.95);
+
+  fill: var(--color-progress);
 }
 
 .icon {
@@ -23,5 +26,7 @@
   height: 100px;
   margin: 25px auto 20px;
 
-  fill: var(--color-primary);
+  transition: .12s ease-in-out;
+
+  fill: var(--color-icon);
 }
