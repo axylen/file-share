@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
-import { clientAddFiles, clientRemoveFile, setDownloadProgress, saveFileData, setConnectionStatus } from 'lib/redux';
+import { setDownloadProgress, saveFileData } from 'lib/redux';
 import { saveFile, throttle } from 'lib/helpers';
 
 import RemoteFilesUI from 'Components/RemoteFiles';
@@ -9,14 +9,11 @@ import RemoteFilesUI from 'Components/RemoteFiles';
 interface ISRemoteFilesProps {
   connection: WebRTCWithFileChannel;
   files: IClientFileStorage;
-  addFiles: typeof clientAddFiles;
-  removeFile: typeof clientRemoveFile;
   setDownloadProgress: typeof setDownloadProgress;
   saveFileData: typeof saveFileData;
-  setConnectionStatus: typeof setConnectionStatus;
 }
 
-const RemoteFiles: React.FC<ISRemoteFilesProps> = ({ connection, files, addFiles, removeFile, setDownloadProgress, saveFileData, setConnectionStatus }) => {
+const RemoteFiles: React.FC<ISRemoteFilesProps> = ({ connection, files, setDownloadProgress, saveFileData }) => {
   useEffect(() => {
     const setProgress = throttle(setDownloadProgress, 33);
     connection.onFileProgress = ({ id, downloaded }) => setProgress(id, downloaded);
@@ -55,10 +52,4 @@ const RemoteFiles: React.FC<ISRemoteFilesProps> = ({ connection, files, addFiles
 
 const mapStateToProps = (state: ReduxStore) => ({ files: state.clientFiles, connectionStatus: state.connection.status });
 
-export default connect(mapStateToProps, {
-  addFiles: clientAddFiles,
-  removeFile: clientRemoveFile,
-  setDownloadProgress,
-  saveFileData,
-  setConnectionStatus,
-})(RemoteFiles);
+export default connect(mapStateToProps, { setDownloadProgress, saveFileData })(RemoteFiles);

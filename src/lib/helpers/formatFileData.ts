@@ -1,7 +1,5 @@
 import mapObject from './mapObject';
 
-type FileInfo = { name: string; size: number };
-
-export default (files: IHostFileStorage): FileInfo => {
+export default (files: IHostFileStorage) => {
   return mapObject(files, ({ name, size }) => ({ name, size }));
 };

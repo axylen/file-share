@@ -1,12 +1,18 @@
-type Object = { [key: string]: any };
+interface IMapCallback<T, U> {
+  (value: T[Extract<keyof T, string>], key: Extract<keyof T, string>, object: T): U;
+}
 
-type Callback = (value?: any, key?: string, object?: Object) => any;
+interface IMapObject {
+  <T extends Object, U>(obj: T, func: IMapCallback<T, U>): { [P in keyof T]: U };
+}
 
-const mapObject = (obj: Object, cb: Callback) => {
+const mapObject: IMapObject = (obj, func) => {
   const newObj: any = {};
+
   for (const id in obj) {
-    newObj[id] = cb(obj[id], id, obj);
+    newObj[id] = func(obj[id], id, obj);
   }
+
   return newObj;
 };
 
