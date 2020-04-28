@@ -33,10 +33,13 @@ const LocalFiles: React.FC<ILocalFilesProps> = ({ connection, files, addFiles, r
 
   const handleRemoveFile = useCallback(
     (id: string) => {
+      const { sentBytes, file } = files[id];
+      if (sentBytes > 0 && sentBytes < file.size) return;
+
       removeFile(id);
       connection.sendJSON({ action: 'removeFile', id });
     },
-    [connection, removeFile],
+    [connection, removeFile, files],
   );
 
   const filesList = Object.keys(files).map((id) => {
