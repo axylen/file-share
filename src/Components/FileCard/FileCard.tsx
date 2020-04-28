@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import css from './FileCard.module.css';
 
 interface IFileCardProps {
@@ -26,13 +26,15 @@ const getIcon = (extention: string) => {
   return 'file-empty';
 };
 
-const FileCard: React.FC<IFileCardProps> = ({ name, id, onClick, progress, iconOnHover }) => {
-  const res = name.match(/\.([a-zA-Z0-9]+)$/);
-  const extention = res ? res[1] : '';
-  const icon = getIcon(extention);
+const FileCard: React.FC<IFileCardProps> = ({ name, id, onClick = () => {}, progress, iconOnHover }) => {
+  const icon = useMemo(() => {
+    const res = name.match(/\.([a-zA-Z0-9]+)$/);
+    const extention = res ? res[1] : '';
+    return getIcon(extention);
+  }, [name]);
 
   return (
-    <button className={css.card} onClick={() => onClick && onClick(id)}>
+    <button className={css.card} onClick={() => onClick(id)}>
       <div className={css.card_iconContainer}>
         <svg className={css.card__icon} xmlns="http://www.w3.org/2000/svg">
           <use href={`icons.svg#${icon}`} />
