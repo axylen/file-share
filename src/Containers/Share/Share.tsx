@@ -19,7 +19,7 @@ interface IShareProps {
 const Share: React.FC<IShareProps> = ({ connection, connectionStatus, setConnectionStatus, localFiles, isHost, addRemoteFiles, removeRemoteFile }) => {
   const history = useHistory();
 
-  connection.onRequestFile = (id) => localFiles[id];
+  connection.onRequestFile = (id) => localFiles[id].file;
 
   connection.onConnection = (status) => {
     setConnectionStatus(status);

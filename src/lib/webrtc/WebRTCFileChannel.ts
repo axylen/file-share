@@ -24,6 +24,7 @@ class WebRTCFileChannel {
   onFileReady = (file: Blob, info: FileInfo): void => {};
   onFileProgress = (info: { size: number; downloaded: number; id: string }): void => {};
   onFileSendProgress = (info: { size: number; sent: number; id: string }): void => {};
+  onFileSent = (id: string, size: number): void => {};
 
   constructor(channel: RTCDataChannel, chunkSize = 16 * 1024) {
     this.channel = channel;
@@ -102,7 +103,10 @@ class WebRTCFileChannel {
   protected doneSendingFile = () => {
     this.channel.onbufferedamountlow = null;
     this.channel.send(JSON.stringify({ status: 'done' }));
-    this.sendingQueue.shift();
+    const file = this.sendingQueue.shift();
+
+    if (file) this.onFileSent(file.id, file.file.size);
+
     this._sendFile();
   };
 
