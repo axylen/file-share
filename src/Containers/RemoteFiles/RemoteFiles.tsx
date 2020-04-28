@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 
 import { clientAddFiles, clientRemoveFile, setDownloadProgress, saveFileData, setConnectionStatus } from 'lib/redux';
-import { saveFile } from 'lib/helpers';
+import { saveFile, throttle } from 'lib/helpers';
 
 import RemoteFilesUI from 'Components/RemoteFiles';
 
@@ -18,7 +18,10 @@ interface ISRemoteFilesProps {
 
 const RemoteFiles: React.FC<ISRemoteFilesProps> = ({ connection, files, addFiles, removeFile, setDownloadProgress, saveFileData, setConnectionStatus }) => {
   useEffect(() => {
-    connection.onFileProgress = ({ downloaded, id }) => setDownloadProgress(id, downloaded);
+    const setProgress = throttle(setDownloadProgress, 33);
+    connection.onFileProgress = ({ id, downloaded }) => setProgress(id, downloaded);
+
+    return () => setProgress.stop();
   }, [connection, setDownloadProgress]);
 
   useEffect(() => {

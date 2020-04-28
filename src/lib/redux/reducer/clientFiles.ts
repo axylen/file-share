@@ -38,7 +38,9 @@ const setDownloadProgress = (state: IClientFileStorage, action: IClientDownloadP
 
 const saveFileData = (state: IClientFileStorage, action: IClientSaveFileDataAction) => {
   const files = { ...state };
-  files[action.payload.id].file = action.payload.file;
+  const file = files[action.payload.id];
+  file.file = action.payload.file;
+  file.downloadedSize = file.size;
   return files;
 };
 
