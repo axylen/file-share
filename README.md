@@ -2,6 +2,9 @@
 This app is used to send files directly from one user to another using WebRTC.  
 Unfortunately because of NAT in some cases connection can't be established without TURN server. I've decided not to use it, but you can add one in [configuration](https://github.com/axylen/file-share/blob/master/src/lib/webrtc/WebRTCConnection.ts).
 
+![Share Files](https://user-images.githubusercontent.com/16079399/80544189-2b803900-89b9-11ea-8488-b274c21e9f00.png)
+
+
 ## Run app
 
 ### Configuration
