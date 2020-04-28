@@ -9,6 +9,7 @@ const AddFileCard: React.FC<{ onFileInput: (files: File[]) => void }> = ({ onFil
     (evt: ChangeEvent) => {
       const files = filterFiles(Array.from(evt.target.files || []));
       if (files.length) onFileInput(files);
+      evt.target.value = '';
     },
     [onFileInput],
   );

@@ -38,6 +38,7 @@ const FileInput: React.FC<IFileInputProps> = ({ onFileInput, noFocus }) => {
     (evt: InputFileChangeEvent) => {
       const files = evt.target.files;
       if (files) checkFiles(Array.from(files));
+      evt.target.value = '';
     },
     [checkFiles],
   );
