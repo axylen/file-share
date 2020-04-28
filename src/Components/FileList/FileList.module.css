@@ -7,6 +7,6 @@
 
   list-style: none;
 
-  gap: 20px;
-  grid-template-columns: repeat(auto-fit, 150px);
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, 140px);
 }

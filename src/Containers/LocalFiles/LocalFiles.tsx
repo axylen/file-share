@@ -43,12 +43,13 @@ const LocalFiles: React.FC<ILocalFilesProps> = ({ connection, files, addFiles, r
   );
 
   const filesList = Object.keys(files).map((id) => {
-    const file = files[id];
+    const { file, sentBytes } = files[id];
 
     return {
       id,
-      name: file.file.name,
-      progress: (file.sentBytes / file.file.size) * 100,
+      name: file.name,
+      size: file.size,
+      progressBytes: sentBytes,
     };
   });
 

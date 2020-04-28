@@ -6,7 +6,8 @@ interface IFileListProps {
   files: {
     id: string;
     name: string;
-    progress?: number;
+    size: number;
+    progressBytes: number;
   }[];
   onFileClick?: (id: string) => void;
   appendComponent?: React.ReactNode;

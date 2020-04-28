@@ -4,7 +4,7 @@ import FileList from 'Components/FileList';
 import css from './RemoteFiles.module.css';
 
 interface IRemoteFilesProps {
-  files: { id: string; name: string; progress?: number }[];
+  files: { id: string; name: string; size: number; progressBytes: number }[];
   requestFile: (id: string) => void;
 }
 

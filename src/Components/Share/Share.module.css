@@ -1,7 +1,8 @@
 .container {
   display: grid;
 
-  max-width: 1460px;
+  max-width: 1320px;
+  padding: 0 20px;
   margin: 50px auto;
 
   gap: 80px;

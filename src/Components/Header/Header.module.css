@@ -19,7 +19,7 @@
   align-items: center;
 
   width: 100%;
-  max-width: 1520px;
+  max-width: 1360px;
   margin: 0 20px;
 
   grid-template-columns: 1fr max-content 1fr;
@@ -51,7 +51,7 @@
 .disconnect {
   padding: 10px;
 
-  transition: .12s ease-in-out;
+  transition: 0.12s ease-in-out;
 
   border: 1px solid currentColor;
   border-radius: 5px;

@@ -42,9 +42,13 @@ const RemoteFiles: React.FC<ISRemoteFilesProps> = ({ connection, files, setDownl
 
   const filesList = Object.keys(files).map((id) => {
     const file = files[id];
-    const fileInfo: { id: string; name: string; progress?: number } = { id, name: file.name };
-    if (file.downloadedSize) fileInfo.progress = (file.downloadedSize / file.size) * 100;
-    return fileInfo;
+
+    return {
+      id,
+      name: file.name,
+      size: file.size,
+      progressBytes: file.downloadedSize || 0,
+    };
   });
 
   return <RemoteFilesUI files={filesList} requestFile={handleRequestFile} />;

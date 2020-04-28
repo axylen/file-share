@@ -7,7 +7,7 @@ import FileInput from 'Components/FileInput';
 import css from './LocalFiles.module.css';
 
 interface ILocalFilesProps {
-  files: { id: string; name: string; progress?: number }[];
+  files: { id: string; name: string; size: number; progressBytes: number }[];
   addFiles: (files: File[]) => void;
   removeFile: (id: string) => void;
 }
