@@ -32,7 +32,7 @@ const Header: React.FC<IHeaderProps> = ({ isHost, isConnected, onDisconnectClick
   return (
     <header className={css.header}>
       <div className={css.container}>
-        <div>{advice}</div>
+        <div className={css.advice}>{advice}</div>
 
         <div className={css.connectionState}>
           <span className={connectionStatusCN} />

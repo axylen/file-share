@@ -10,3 +10,10 @@
   gap: 12px;
   grid-template-columns: repeat(auto-fit, 140px);
 }
+
+@media (max-width: 340px) {
+  .list {
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, 130px);
+  }
+}

@@ -13,6 +13,7 @@
 .heading {
   font-size: 56px;
   font-weight: 900;
+  line-height: 1;
 
   margin: 0;
 
@@ -23,7 +24,7 @@
   font-size: 32px;
   font-weight: 600;
 
-  margin: 0;
+  margin: 10px 0 0;
 
   text-transform: lowercase;
 }
@@ -49,4 +50,14 @@
 .spinnerContainer {
   width: 200px;
   height: 200px;
+}
+
+@media (max-width: 700px) {
+  .heading {
+    font-size: 32px;
+  }
+
+  .lead {
+    font-size: 18px;
+  }
 }

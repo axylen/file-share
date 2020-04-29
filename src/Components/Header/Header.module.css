@@ -67,3 +67,17 @@
   color: var(--color-header);
   background-color: var(--color-text-inverse);
 }
+
+@media (max-width: 1050px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .advice {
+    display: none;
+  }
+
+  .connectionState {
+    margin-left: 20px;
+  }
+}
