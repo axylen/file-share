@@ -45,4 +45,8 @@
   .container {
     grid-template-columns: 1fr;
   }
+
+  .container__your_files {
+    grid-row: 2;
+  }
 }

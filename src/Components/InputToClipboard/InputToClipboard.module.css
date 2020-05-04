@@ -1,23 +1,32 @@
 .inputGroup {
   position: relative;
 
+  display: flex;
+
   width: 100%;
   max-width: 400px;
 
   color: var(--color-text);
-}
-
-.input {
-  width: 100%;
-  padding: 8px 64px 8px 10px;
-
-  text-overflow: ellipsis;
-
-  border: 2px solid var(--color-card);
   border-radius: 5px;
   outline: none;
   background-color: var(--color-card);
   box-shadow: var(--shadow);
+}
+
+.input {
+  width: 100%;
+  margin-right: 64px;
+  padding: 10px 0 10px 12px;
+
+  text-overflow: ellipsis;
+
+  border: none;
+  outline: none;
+  background: none;
+}
+
+.input::selection {
+  background-color: var(--color-card-secondary);
 }
 
 .btn {
@@ -32,8 +41,8 @@
   width: 60px;
   height: 100%;
 
-  transition: color .1s, background-color .1s;
-  transition: .12s ease-in-out;
+  transition: color 0.1s, background-color 0.1s;
+  transition: 0.12s ease-in-out;
 
   color: var(--color-text);
   border: 2px solid var(--color-card);

@@ -40,11 +40,11 @@ const Share: React.FC<IShareProps> = ({ isConnected, isHost, connection, disconn
     <>
       <Header isHost={isHost} isConnected={isConnected} onDisconnectClick={disconnect} />
       <main className={css.container}>
-        <section>
+        <section className={css.container__your_files}>
           <h2 className={css.heading}>Your Files</h2>
           <LocalFiles connection={connection} />
         </section>
-        <section>
+        <section className={css.container__remote_files}>
           <h2 className={css.heading}>Remote Files</h2>
           {remoteFilesSection[connectionState]}
         </section>
