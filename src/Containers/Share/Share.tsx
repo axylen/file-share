@@ -19,14 +19,16 @@ interface IShareProps {
 const Share: React.FC<IShareProps> = ({ connection, connectionStatus, setConnectionStatus, localFiles, isHost, addRemoteFiles, removeRemoteFile }) => {
   const history = useHistory();
 
-  connection.onRequestFile = (id) => localFiles[id].file;
-
-  connection.onConnection = (status) => {
-    setConnectionStatus(status);
-    if (status === 'disconnected') return history.push('/');
-    if (status !== 'connected') return;
-    setTimeout(() => connection.sendJSON({ action: 'addFiles', files: formatFileData(localFiles) }), 50);
-  };
+  useEffect(() => {
+    connection.onRequestFile = (id) => localFiles[id].file;
+  
+    connection.onConnection = (status) => {
+      setConnectionStatus(status);
+      if (status === 'disconnected') return history.push('/');
+      if (status !== 'connected') return;
+      setTimeout(() => connection.sendJSON({ action: 'addFiles', files: formatFileData(localFiles) }), 50);
+    };
+  }, [localFiles, connection, history, setConnectionStatus])
 
   useEffect(() => {
     connection.onMessage = (msg) => {
@@ -37,7 +39,7 @@ const Share: React.FC<IShareProps> = ({ connection, connectionStatus, setConnect
     };
   }, [connection, addRemoteFiles, removeRemoteFile]);
 
-  return <ShareUI isConnected={connectionStatus === 'connected'} isHost={isHost} connection={connection} disconnect={() => history.replace('/')} />;
+  return <ShareUI isConnected={['connected', 'completed'].includes(connectionStatus)} isHost={isHost} connection={connection} disconnect={() => history.replace('/')} />;
 };
 
 const mapStateToProps = (state: ReduxStore) => ({
