@@ -1,4 +1,5 @@
 import React from 'react';
+import QRCode from 'qrcode.react';
 
 import css from './Share.module.css';
 
@@ -24,6 +25,9 @@ const Share: React.FC<IShareProps> = ({ isConnected, isHost, connection, disconn
         <p className={css.remoteFiles__shareInfo}>Copy this link and send it to the person you want to share files with.</p>
         <div className={css.remoteFiles__shareLink}>
           <InputToClipboard text={window.location.href} />
+        </div>
+        <div className={css.remoteFiles__qr}>
+          <QRCode value={window.location.href} renderAs="svg" size={200} fgColor="var(--color-text)" bgColor="transparent" />
         </div>
       </div>
     ),

@@ -35,6 +35,16 @@
   margin: 30px auto;
 }
 
+.remoteFiles__qr {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.remoteFiles__qr > svg {
+  border-radius: 10px;
+}
+
 @media (max-width: 1050px) {
   .container {
     gap: 50px;
