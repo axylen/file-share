@@ -27,7 +27,7 @@ const Share: React.FC<IShareProps> = ({ isConnected, isHost, connection, disconn
           <InputToClipboard text={window.location.href} />
         </div>
         <div className={css.remoteFiles__qr}>
-          <QRCode value={window.location.href} renderAs="svg" size={200} fgColor="var(--color-text)" bgColor="transparent" />
+          <QRCode value={window.location.href} renderAs="svg" size={158} fgColor="var(--color-text)" bgColor="transparent" />
         </div>
       </div>
     ),
